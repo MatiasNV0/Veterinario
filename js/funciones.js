@@ -1,6 +1,7 @@
 import { editando, IDcita, buttonSubmit, setEditando } from "./variable.js";
 import { citas } from "./Clases/AdminCitas.js";
 import { notificaciones } from "./Clases/Notificaciones.js";
+import { DB } from "./database.js";
 
 export function RegistrarPaciente(e){
     e.preventDefault();
@@ -28,6 +29,9 @@ export function RegistrarPaciente(e){
         notificaciones.MostrarMensajes('Correcto','Registro Exitoso');
         if(editando){
             Paciente.id = IDcita;
+            let transaction = DB.value.transaction(['citas'], 'readwrite');
+            const objectStore = transaction.objectStore('citas');
+            const request = objectStore.put(Paciente);
             citas.editarCita(Paciente);
             notificaciones.MostrarMensajes("Correcto","Registro Actualizado Exitosamente");
             setEditando(false);
@@ -35,10 +39,12 @@ export function RegistrarPaciente(e){
         }
         else{
             Paciente.id = Date.now();
+            let transaction = DB.value.transaction(['citas'], 'readwrite');
+            const objectStore = transaction.objectStore('citas');
+            const request = objectStore.add(Paciente);
             citas.agregarCita(Paciente);
         }
     }
-    console.log(citas.citas);
 }
 
 export function EditarCita(cita) {
