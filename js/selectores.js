@@ -1,0 +1,1 @@
+export const formRegistrar = document.querySelector('form');
